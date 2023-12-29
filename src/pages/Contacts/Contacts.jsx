@@ -31,7 +31,7 @@ const Contacts = () => {
   }, [dispatch, isLoggedIn, navigate]);
 
   const onSubmitContact = (evt) => {
-    // ваша логика
+   
   };
 
   const onChangeInput = (evt) => {
@@ -49,7 +49,7 @@ const Contacts = () => {
   };
 
   const onLogout = () => {
-    // ваша логика выхода
+  
   };
 
   return (
