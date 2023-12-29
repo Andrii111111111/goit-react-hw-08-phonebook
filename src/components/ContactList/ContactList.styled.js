@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ListByContact = styled.ul`
   width: 100%;
-  margin: 0 auto; /* Центрировать список по горизонтали */
+  margin: 0 auto; 
   list-style-type: none;
   padding: 0;
 `;

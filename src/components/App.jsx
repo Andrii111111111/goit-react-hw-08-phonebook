@@ -66,13 +66,13 @@ export const App = () => {
     await dispatch(signUp(obj));
 
     if (authError === true) {
-      // Вместо alert
+    
       toast.error('Registration failed. Please check your details.');
       return;
     } else {
       await formReset();
       navigate('/contacts', { replace: true });
-      // Вместо alert
+   
       toast.success('Registration successful! You are now logged in.');
     }
   };
@@ -86,20 +86,20 @@ export const App = () => {
     await dispatch(logIn(obj));
 
     if (authError === true) {
-      // Вместо alert
+  
       toast.error('Login failed. Please check your credentials.');
       return;
     } else {
       await formReset();
       navigate('/contacts', { replace: true });
-      // Вместо alert
+    
       toast.success('Login successful!');
     }
   };
   const onLogout = async () => {
     await dispatch(logOut());
     navigate('/', { replace: true });
-    // Вместо alert
+
     toast.info('You have been logged out.');
   };
   return isRefreshing ? (
