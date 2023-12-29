@@ -1,36 +1,52 @@
-import PropTypes from 'prop-types';
+
+import { useSelector } from 'react-redux';
+
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { addContact, fetchContacts } from 'api/api';
 import { Form, Label, Input, Button } from './ContactForm.styled';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const submit = async (evt, dispatch, contacts) => {
-  const formReset = () => {
-    evt.target.name.value = '';
-    evt.target.querySelector('input[type="tel"]').value = '';
-  };
-  const contactObject = {
-    name: evt.target.name.value,
-    number: evt.target.querySelector('input[type="tel"]').value,
-  };
-  if (
-    contacts.find(
-      contact => contact.name.toUpperCase() === contactObject.name.toUpperCase()
-    )
-  ) {
-    toast.error(`${contactObject.name} is already in the contacts`);
-  } else {
-    await dispatch(addContact(contactObject));
-    await dispatch(fetchContacts());
-    toast.success(`${contactObject.name} added to contacts`);
-  }
-  await formReset();
-};
+export const ContactForm = () => {
+  const contacts = useSelector(state => state.contacts.items);
 
-export const ContactForm = ({ formSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+
+  const formReset = () => {
+    setName('');
+    setNumber('');
+  };
+
+  const handleSubmit = async (evt) => {
+    evt.preventDefault();
+
+    const contactObject = {
+      name,
+      number,
+    };
+
+    if (
+      contacts.find(
+        (contact) =>
+          contact.name.toUpperCase() === contactObject.name.toUpperCase()
+      )
+    ) {
+      toast.error(`${contactObject.name} is already in the contacts`);
+    } else {
+      await dispatch(addContact(contactObject));
+      await dispatch(fetchContacts());
+      toast.success(`${contactObject.name} added to contacts`);
+    }
+
+    formReset();
+  };
+
   return (
     <div>
-      <Form onSubmit={formSubmit}>
+      <Form onSubmit={handleSubmit}>
         <Label>
           <Input
             type="text"
@@ -39,6 +55,8 @@ export const ContactForm = ({ formSubmit }) => {
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             placeholder="Name"
             required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           <Input
             type="tel"
@@ -47,6 +65,8 @@ export const ContactForm = ({ formSubmit }) => {
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             placeholder="Number"
             required
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
           />
           <Button type="submit">Add new contact</Button>
         </Label>
@@ -55,6 +75,6 @@ export const ContactForm = ({ formSubmit }) => {
     </div>
   );
 };
-ContactForm.propTypes = {
-  formSubmit: PropTypes.func,
-};
+
+
+

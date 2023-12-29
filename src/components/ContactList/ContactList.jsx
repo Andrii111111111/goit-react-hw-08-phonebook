@@ -1,43 +1,51 @@
+
+
 import PropTypes from 'prop-types';
 import { ListByContact, ListItem, Button } from './ContactList.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'api/api';
 
-export const ContactList = ({ contacts, filter, filtering, deleting }) => {
-  const filteringByName = filtering();
+export const ContactList = () => {
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.filter);
+
+  const dispatch = useDispatch();
+
+  const filteringByName = () => {
+    return contacts.filter(contact =>
+      contact.name.toUpperCase().includes(filter.toUpperCase())
+    );
+  };
+
+  const filteredContacts = filter.length > 0 ? filteringByName() : contacts;
+
+  const handleDelete = id => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <ListByContact>
-      {contacts.length > 0 ? (
-        filter.length > 0 ? (
-          filteringByName.map(contact => {
-            return (
-              <ListItem key={contact.id}>
-                {contact.name}: {contact.number}
-                <Button type="Button" id={contact.id} onClick={deleting}>
-                  Delete
-                </Button>
-              </ListItem>
-            );
-          })
-        ) : (
-          contacts.map(contact => {
-            return (
-              <ListItem key={contact.id}>
-                {contact.name}: {contact.number}
-                <Button type="button" id={contact.id} onClick={deleting}>
-                  Delete
-                </Button>
-              </ListItem>
-            );
-          })
-        )
+      {filteredContacts.length > 0 ? (
+        filteredContacts.map(contact => (
+          <ListItem key={contact.id}>
+            {contact.name}: {contact.number}
+            <Button type="button" onClick={() => handleDelete(contact.id)}>
+              Delete
+            </Button>
+          </ListItem>
+        ))
       ) : (
-        <ListItem>You dont have any contacts yet</ListItem>
+        <ListItem>You don't have any contacts yet</ListItem>
       )}
     </ListByContact>
   );
 };
+
 ContactList.propTypes = {
   contacts: PropTypes.array,
   filter: PropTypes.string,
-  filtering: PropTypes.func,
-  deleting: PropTypes.func,
+  onDelete: PropTypes.func,
 };
+
+
+
