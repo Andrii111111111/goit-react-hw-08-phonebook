@@ -1,80 +1,84 @@
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { object, string, number } from 'yup';
+import { selectContactItems } from 'redux/selectors';
+import { addContact } from 'redux/operationsContacts';
+import { Button, TextField } from '@mui/material';
+import { useFormik } from 'formik';
 
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addContact, fetchContacts } from 'api/api';
-import { Form, Label, Input, Button } from './ContactForm.styled';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+const schema = object({
+  name: string()
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required!'),
+  number: number('must be a number').min(2, 'Too Short!').required('Required!'),
+});
 
 export const ContactForm = () => {
-  const contacts = useSelector(state => state.contacts.items);
-
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContactItems);
 
-  const formReset = () => {
-    setName('');
-    setNumber('');
-  };
-
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
-
-    const contactObject = {
-      name,
-      number,
-    };
-
+  const handleSubmit = (values, { resetForm }) => {
+    resetForm();
     if (
       contacts.find(
-        (contact) =>
-          contact.name.toUpperCase() === contactObject.name.toUpperCase()
+        ({ name: contactName }) =>
+          contactName.toLowerCase() === values.name.toLowerCase()
       )
     ) {
-      toast.error(`${contactObject.name} is already in the contacts`);
-    } else {
-      await dispatch(addContact(contactObject));
-      await dispatch(fetchContacts());
-      toast.success(`${contactObject.name} added to contacts`);
+      alert(`${values.name} is already in contacts`);
+      return;
     }
+    dispatch(addContact(values));
 
-    formReset();
+    console.log(values);
   };
 
-  return (
-    <div>
-      <Form onSubmit={handleSubmit}>
-        <Label>
-          <Input
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      number: '',
+    },
+    onSubmit:  handleSubmit ,
+    validationSchema:  schema ,
+  });
+
+  return (    
+      <form autoComplete="off" onSubmit={formik.handleSubmit}>
+        <div className='inputWrap'>
+          <TextField
             type="text"
+            id="name"
             name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zAZа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            placeholder="Name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter name ..."
+            label="Name"
+            variant="outlined"
+            onChange={formik.handleChange}
+            value={formik.values.name}
           />
-          <Input
+          {formik.touched.name && formik.errors.name ? (
+        <div className='FormikErr'>{formik.errors.name}</div>
+      ) : null}
+          {/* <FormError name="name" /> */}
+        </div>
+        <div className='inputWrap'>
+          <TextField
             type="tel"
             name="number"
-            pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            placeholder="Number"
-            required
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
+            label="Phone"
+            id="number"
+            placeholder="tel: xxx-xx-xx"
+            onChange={formik.handleChange}
+            value={formik.values.number}
           />
-          <Button type="submit">Add new contact</Button>
-        </Label>
-      </Form>
-      <ToastContainer />
-    </div>
+           {formik.touched.number && formik.errors.number ? (
+        <div className='FormikErr'>{formik.errors.number}</div>
+      ) : null}
+          {/* <FormError name="number" /> */}
+        </div>
+        <Button variant="contained" type="submit">
+          Add contact
+        </Button>
+      </form>    
   );
 };
-
-
-

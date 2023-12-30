@@ -1,23 +1,22 @@
 import styled from 'styled-components';
 
-export const ListByContact = styled.ul`
-  width: 100%;
-  margin: 0 auto; 
-  list-style-type: none;
-  padding: 0;
-`;
-
-export const ListItem = styled.li`
+export const List = styled.ul`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-`;
+  flex-direction: column;
+  margin-bottom: 30px;
+  gap: 10px;
 
-export const Button = styled.button`
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+  li {
+    font-weight: 500;
+
+    button {
+      width: max-content;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 15px;
+      margin-bottom: 5px;
+      border: none;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2), 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
 `;

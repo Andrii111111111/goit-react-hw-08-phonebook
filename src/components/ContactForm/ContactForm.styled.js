@@ -1,36 +1,44 @@
 import styled from 'styled-components';
+import { Field, Form } from 'formik';
 
-export const Form = styled.form`
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+export const FormEl = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  width: 500px;
+  padding: 20px 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  gap: 10px;
+
+  label {
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  /* input{
+    font-size: 15px;
+    width: 250px;
+    height: 26px;
+    margin-bottom: 30px;
+    outline: none;   
+    margin-right: 10px; */
+
+  /*    
+    &:focus{
+        outline: 1px solid rgba(0, 255, 255);
+    } */
+
+  /* }   */
+
+  button {
+    width: max-content;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2), 1px 1px 3px rgba(0, 0, 0, 0.2);
+  }
 `;
-
-export const Label = styled.label`
-  display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
-
-export const Input = styled.input`
-  width: 90%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-`;
-
-export const Button = styled.button`
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
+export const FieldEl = styled(Field)`
+  outline: none;
+  height: 60px;
+  margin-right: 10px;
+  width: 250px;
 `;

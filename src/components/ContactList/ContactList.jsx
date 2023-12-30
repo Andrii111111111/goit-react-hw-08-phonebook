@@ -1,51 +1,33 @@
+import { Button } from '@mui/material';
+import { List } from './ContactList.styled';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteContact } from 'redux/operationsContacts';
+import { selectVisibleContacts } from 'redux/selectors';
 
-
-import PropTypes from 'prop-types';
-import { ListByContact, ListItem, Button } from './ContactList.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'api/api';
 
 export const ContactList = () => {
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.filter);
-
+  
   const dispatch = useDispatch();
 
-  const filteringByName = () => {
-    return contacts.filter(contact =>
-      contact.name.toUpperCase().includes(filter.toUpperCase())
-    );
+  const onDeleteContact = contactId => {
+    dispatch(deleteContact(contactId));
   };
 
-  const filteredContacts = filter.length > 0 ? filteringByName() : contacts;
-
-  const handleDelete = id => {
-    dispatch(deleteContact(id));
-  };
-
+  const visibleContacts = useSelector(selectVisibleContacts);
+ 
   return (
-    <ListByContact>
-      {filteredContacts.length > 0 ? (
-        filteredContacts.map(contact => (
-          <ListItem key={contact.id}>
-            {contact.name}: {contact.number}
-            <Button type="button" onClick={() => handleDelete(contact.id)}>
-              Delete
-            </Button>
-          </ListItem>
-        ))
-      ) : (
-        <ListItem>You don't have any contacts yet</ListItem>
-      )}
-    </ListByContact>
+    <List>
+      {[
+        visibleContacts.map(({ id, name, number }) => {
+          return (
+            <li key={id}>
+              {name}: {number}
+              {/* <button onClick={() => onDeleteContact(id)}>Delete</button> */}
+              <Button variant="contained" onClick={() => onDeleteContact(id)}>Delete</Button>
+            </li>
+          );
+        }),
+      ]}
+    </List>
   );
 };
-
-ContactList.propTypes = {
-  contacts: PropTypes.array,
-  filter: PropTypes.string,
-  onDelete: PropTypes.func,
-};
-
-
-
